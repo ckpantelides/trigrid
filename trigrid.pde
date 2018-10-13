@@ -1,58 +1,85 @@
-Triangle triangle1;
-Triangle triangle2;
-Triangle triangle3;
-Triangle triangle4;
+// the grid is a repeating pattern of four 'base' triangles
+// start by initializing the arrays to hold each triangle object
 
-// height of equilateral triangle with side length of 50
+Triangle[] triangle1 = new Triangle[250];
+Triangle[] triangle2 = new Triangle[250];
+Triangle[] triangle3 = new Triangle[250];
+Triangle[] triangle4 = new Triangle[250];
+
+// 'a' is the height of the equilateral triangle (with sides of 50 pixels)
 float a = sqrt(1875);
-
 float b = a + a;
-// int c = 0;
+
+// k will act as the counter for each triangle object
+int k;
 
 void setup() {
-  size(10*b, 600);
+  size(13*b, 450);
 
-  // created four initial triangles, two pointing left, two right
-  // this is likely not necessary (rotate or translate could have been used)
-  triangle1 = new Triangle(0, 0, 0, 50, a, 25);
-  triangle2 = new Triangle(a, -25, a, 25, 0, 0);
-  triangle3 = new Triangle(a, 25, a, -25, b, 0);
-  triangle4 = new Triangle(a, 25, b, 0, b, 50);
+  // creates a nested loop to redraw the triangles horizontally and then vertically
+  for (int i=0; i < 13; i++) {
+    for (int j=0; j < 12; j++) {
 
-}
+      k = (i*10) + j;
 
-void mousePressed() {
+      // with each loop the triangle is moved twice its height along the x axis
+      // and once its height along the y axis. The pattern is repeated for the four
+      // 'base' triangles
+      float x1 = 0 + (i*b);
+      float y1 = 0 + (50*j);
+      float x2 = 0 + (i*b);
+      float y2 = 50 + (50*j);
+      float x3 = a + (i*b);
+      float y3 = 25 + (50*j);
+      triangle1[k] = new Triangle(x1, y1, x2, y2, x3, y3);
 
-  // the 'clicked' function from the Triangle class is called when the mouse is pressed
-  for ( int i=0; i<10; i++) {
-    for ( int j=0; j<13; j++) {
-      triangle1.clicked();
-      triangle2.clicked();
-      triangle3.clicked();
-      triangle4.clicked();
+      float d1 = a + (i*b);
+      float e1 = -25 + (50*j);
+      float d2 = a + (i*b);
+      float e2 = 25 + (50*j);
+      float d3 = 0 + (i*b);
+      float e3 = 0 + (50*j);
+      triangle2[k] = new Triangle(d1, e1, d2, e2, d3, e3);
+
+      float f1 = a + (i*b);
+      float g1 = 25 + (50*j);
+      float f2 = a + (i*b);
+      float g2 = -25 + (50*j);
+      float f3 = b + (i*b);
+      float g3 = 0 + (50*j);
+      triangle3[k] = new Triangle(f1, g1, f2, g2,f3, g3);
+
+      float l1 = a + (i*b);
+      float m1 = 25 + (50*j);
+      float l2 = b + (i*b);
+      float m2 = 0 + (50*j);
+      float l3 = b + (i*b);
+      float m3 = 50 + (50*j);
+      triangle4[k] = new Triangle(l1, m1, l2, m2, l3, m3);
     }
   }
 }
 
 void draw() {
-  for ( int i=0; i<10; i++) {
-    for ( int j=0; j<13; j++) {
+  for ( int i=0; i < 13; i++) {
+    for ( int j=0; j < 12; j++) {
+      k = (i*10) + j;
 
-      // translates the four initial triangles from setup to create the background pattern
-      pushMatrix();
-      translate(b*i, 50*j);
-      triangle1.display();
-      triangle2.display();
-      triangle3.display();
-      triangle4.display();
-      popMatrix();
+        // this will draw all the triangles created in setup using the display method
+        // of each object triangle
+        triangle1[k].display();
+        triangle2[k].display();
+        triangle3[k].display();
+        triangle4[k].display();
+
     }
   }
 }
 
+// creates class object which acts as the basis for each triangle
 class Triangle {
 
-  int c;
+  color c;
   float xpos1;
   float ypos1;
   float xpos2;
@@ -63,7 +90,7 @@ class Triangle {
   // constructor function for Triangle class
   Triangle(float tempXpos1, float tempYpos1,  float tempXpos2, float tempYpos2,  float tempXpos3, float tempYpos3) {
 
-      c = 155;
+      c = 255;
       xpos1 = tempXpos1;
       ypos1 = tempYpos1;
       xpos2 = tempXpos2;
@@ -73,26 +100,71 @@ class Triangle {
 
   }
 
-  // display class function draws the triangle
+  // display method draws the triangle
   void display() {
-    stroke(#e6f9ff);
+    stroke(200);
     fill(c);
     triangle(xpos1, ypos1, xpos2, ypos2, xpos3, ypos3);
   }
 
-  // change-color function (to be passed to mousePressed event)
+  // change-color method (to be passed to mousePressed event)
   void clicked() {
-    if(c == 155) {
-      c = 0;
-    }
-    else if (c == 0) {
-      c = 255;
-    }
-    else if (c == 255) {
-      c = 155;
+      if (c == 255) {
+        c = #FFCC00;
+      }
+      else if(c == #FFCC00) {
+        c = #4db8ff;
+      }
+      else if (c == #4db8ff) {
+        c = #ff3300;
+      }
+      else if (c == #ff3300) {
+        c = 255;
+      }
+  }
+
+}
+
+// checks coordinates of each triangle, runs click() method if cursor within "a"
+// i.e. the triangle height of each corner
+
+void mousePressed() {
+
+  float a = sqrt(1875);
+  for ( int i=0; i < 13; i++) {
+    for ( int j=0; j < 12; j++) {
+      k = (i*10) + j;
+      float a1 = dist(triangle1[k].xpos1, triangle1[k].ypos1, mouseX, mouseY);
+      float b1 = dist(triangle1[k].xpos2, triangle1[k].ypos2, mouseX, mouseY);
+      float c1 = dist(triangle1[k].xpos3, triangle1[k].ypos3, mouseX, mouseY);
+
+      if (a1 <= a && b1 <= a && c1 <= a) {
+        triangle1[k].clicked();
+      }
+
+      float a2 = dist(triangle2[k].xpos1, triangle2[k].ypos1, mouseX, mouseY);
+      float b2 = dist(triangle2[k].xpos2, triangle2[k].ypos2, mouseX, mouseY);
+      float c2 = dist(triangle2[k].xpos3, triangle2[k].ypos3, mouseX, mouseY);
+
+      if (a2 <= a && b2 <= a && c2 <= a) {
+        triangle2[k].clicked();
+      }
+
+      float a3 = dist(triangle3[k].xpos1, triangle3[k].ypos1, mouseX, mouseY);
+      float b3 = dist(triangle3[k].xpos2, triangle3[k].ypos2, mouseX, mouseY);
+      float c3 = dist(triangle3[k].xpos3, triangle3[k].ypos3, mouseX, mouseY);
+
+      if (a3 <= a && b3 <= a && c3 <= a) {
+        triangle3[k].clicked();
+      }
+
+      float a4 = dist(triangle4[k].xpos1, triangle4[k].ypos1, mouseX, mouseY);
+      float b4 = dist(triangle4[k].xpos2, triangle4[k].ypos2, mouseX, mouseY);
+      float c4 = dist(triangle4[k].xpos3, triangle4[k].ypos3, mouseX, mouseY);
+
+      if (a4 <= a && b4 <= a && c4 <= a) {
+        triangle4[k].clicked();
+      }
     }
   }
 }
-
-// incomplete test to see if cursor is inside triangle (to be placed in 'click' function):
-//  if (mouseX - xpos1 < 50) { ... }
