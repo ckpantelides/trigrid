@@ -9,7 +9,9 @@ The interface can be found [here](https://ckpantelides.github.io/trigrid/)
 * When each triangle is clicked, it cycles between three colours
 
 > First the grid of triangles is drawn, with the x & y coordinates of each triangle corner pushed to an array
+
 > When the mouse is clicked, the distance between the x & y coordinates of the cursor is checked against the coordinates of each triangles' corners
+
 > If the cursor is within the distance a (the triangles height) of each corner, it's inside the triangle, and the colour will change
 
 ![img1]
